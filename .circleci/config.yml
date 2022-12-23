@@ -7,7 +7,7 @@ version: 2.1
 commands:
   print_pipeline_id:
     steps:
-      - run: echo ${CIRCLE_WORKFLOW_ID}
+      - run: return 1
 jobs:
   print_hello:
     docker:
@@ -36,6 +36,10 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World! "
       - print_pipeline_id
+      - run:
+          name: After job failure
+          command: echo "Job Failed"
+          when: on_fail
    
 
 # Invoke jobs via workflows
