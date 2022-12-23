@@ -7,7 +7,7 @@ version: 2.1
 commands:
   print_pipeline_id:
     steps:
-      - run: return 0
+      - run: echo "Do not return anything"
 jobs:
   print_hello:
     docker:
