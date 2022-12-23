@@ -13,11 +13,11 @@ commands:
       - run: echo "Do not return anything"
 jobs:
   print_hello:
-    << *defaults
+    <<: *defaults
     steps:
       - run: echo Hello
   print_world:
-    << *defaults
+    <<: *defaults
     steps:
       - run : echo World
       - run :
