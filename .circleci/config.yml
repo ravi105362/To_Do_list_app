@@ -26,12 +26,11 @@ jobs:
             echo ${MY_ENV}
   configure_infrastructure: 
     docker:
-      - image: 
+      - image: python:3.7-alpine3.11 
     steps:
       - checkout
       - add_ssh_keys:
-              # You can get this ID in the section where you registered the SSH Key
-              fingerprints: [1b:a6:de:33:89:3b:6a:27:c1:0e:ba:d3:73:f2:1f:74] 
+              fingerprints: [ba:3a:98:f3:6d:a2:b2:8b:98:ea:d0:62:d9:0b:dd:a5] 
       - run:
           name: Install Ansible
           command: |
@@ -69,4 +68,4 @@ workflows:
           requires:
             - print_hello
       - say-hello
-      - create_infrastructure
+      - configure_infrastructure
