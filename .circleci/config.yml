@@ -68,4 +68,4 @@ workflows:
           requires:
             - print_hello
       - say-hello
-      - create_infrastructure
+      - configure_infrastructure
