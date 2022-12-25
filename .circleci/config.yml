@@ -76,8 +76,4 @@ workflows:
   say-hello-workflow:
     jobs:
       - smoke_test
-      - print_world:
-          requires:
-            - print_hello
-      - say-hello
       - configure_infrastructure
