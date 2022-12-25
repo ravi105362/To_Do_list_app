@@ -11,31 +11,49 @@ commands:
   print_pipeline_id:
     steps:
       - run: echo "Do not return anything"
+  commands:
+   # Exercise - Rollback
+   destroy_environment:
+     steps:
+       - run:
+           name: Destroy environment
+           # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
+           # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
+           when: on_fail
+           command: |
+             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
 jobs:
+  # Exercise: Smoke Testing
   smoke_test:
-    docker :
+   docker:
      - image: alpine:latest
-    steps:
-     - run: apk add --update curl
+   steps:
      - run:
-         name: smoke test
+         name: Test job
+         # Fail the job intentionally to simulate an error.
+         command:  return 1
+     - destroy_environment 
+    print_world:
+      <<: *defaults
+      steps:
+        - run : echo World
+        - run :
+            name: "echo an env var that is part of our project"
+            command: |
+              echo ${MY_ENV}
+  # Exercise - Rollback
+  create_infrastructure: 
+   docker:
+     - image: amazon/aws-cli
+   steps:
+     - checkout
+     - run:
+         name: Create Cloudformation Stack
          command: |
-           URL="https://blog.udacity33.com/"
-           # Test if website exists
-           if curl -s --head ${URL} 
-           then
-             return 0
-           else
-             return 1
-           fi
-  print_world:
-    <<: *defaults
-    steps:
-      - run : echo World
-      - run :
-          name: "echo an env var that is part of our project"
-          command: |
-            echo ${MY_ENV}
+           aws cloudformation deploy \
+             --template-file template.yml \
+             --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7} \
+             --region us-east-1
   configure_infrastructure: 
     docker:
       - image: python:3.7-alpine3.11 
