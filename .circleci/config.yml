@@ -12,10 +12,22 @@ commands:
     steps:
       - run: echo "Do not return anything"
 jobs:
-  print_hello:
-    <<: *defaults
+  smoke_test:
+    docker :
+     - image: alpine:latest
     steps:
-      - run: echo Hello
+     - run: apk add --update curl
+     - run:
+         name: smoke test
+         command: |
+           URL="https://blog.udacity.com/"
+           # Test if website exists
+           if curl -s --head ${URL} 
+           then
+             return 0
+           else
+             return 1
+           fi
   print_world:
     <<: *defaults
     steps:
@@ -63,7 +75,7 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - print_hello
+      - smoke_test
       - print_world:
           requires:
             - print_hello
